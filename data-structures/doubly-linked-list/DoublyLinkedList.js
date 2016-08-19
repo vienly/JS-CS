@@ -2,29 +2,28 @@
 
 const Node = require('./Node');
 
-function LinkedList() {
+function DoublyLinkedList() {
   this._length = 0;
   this._head = null;
+  this._tail = null;
 }
 
-LinkedList.prototype = {
-  append: function(data) {
+DoublyLinkedList.prototype = {
+  append: function (data) {
     const node = new Node(data);
 
-    if (this._head === null) {
+    if (this._length === 0) {
       this._head = node;
+      this._tail = node;
     } else {
-      var current = this._head;
-
-      while (current.next) {
-        current = current.next;
-      }
-
-      current.next = node;
+      this._tail.next = node;
+      node.prev = this._tail;
+      this._tail = node;
     }
 
     this._length++;
   },
+
 
   get: function(index) {
     if (index > -1 && index < this._length) {
@@ -43,23 +42,37 @@ LinkedList.prototype = {
   remove: function(index) {
     if (index > -1 && index < this._length) {
       var current = this._head;
-      var previous;
 
       if (index === 0) {
         this._head = current.next;
+
+        if (!this._head) {
+          this._tail = null;
+        } else {
+          this._head.prev = null;
+        }
+
+      } else if (index === this._length - 1) {
+        current = this._tail;
+        this._tail = current.prev;
+        this._tail.next = null;
       } else {
+
         for (let i = 0; i < index; i++) {
-          previous = current;
           current = current.next;
         }
 
-        previous.next = current.next;
+        current.prev.next = current.next;
+        current.next.prev = current.prev;
       }
 
       this._length--;
-    }
 
-    return current.data;
+      return current.data;
+
+    } else {
+      return null;
+    }
   },
 
   toArray: function() {
@@ -78,5 +91,3 @@ LinkedList.prototype = {
     return this.toArray().join(', ');
   },
 };
-
-module.exports = LinkedList;
