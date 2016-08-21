@@ -24,7 +24,6 @@ DoublyLinkedList.prototype = {
     this._length++;
   },
 
-
   get: function(index) {
     if (index > -1 && index < this._length) {
       var current = this._head;
