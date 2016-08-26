@@ -27,6 +27,46 @@ BinarySearchTree.prototype = {
   },
 
 
+  delete: function(value) {
+    this._root = deleteHelper(value, this._root);
+
+    function minValue(node) {
+      if (!node._left) {
+        return node._data;
+      }
+
+      return minValue(node._left);
+    }
+
+    function deleteHelper(value, node) {
+      if (!node) {
+        return node; // value does not exist in tree
+      }
+
+      // moving down the tree to find the node to delete
+      if (value < node._data) {
+        node._left = deleteHelper(value, node._left);
+      } else if (value > node._data) {
+        node._right = deleteHelper(value, node._right);
+      } else { // found node to delete
+        // zero/one child case
+        if (!node._left) {
+          return node._right;
+        } else if (!node._right) {
+          return node._left;
+        }
+
+        // two children, take the min value from right subtree and assign it as your own
+        node._data = minValue(node._right);
+
+        // delete the node whose value you've taken
+        node._right = deleteHelper(node._data, node._right);
+      }
+      return node;
+    }
+  },
+
+
   find: function(data) {
     function findHelper(data, node) {
       if (node._data === data || !node) {
@@ -84,20 +124,6 @@ BinarySearchTree.prototype = {
     }
 
     return postorderHelper(this._root);
-  },
-
-
-  delete: function(data) {
-
-    //   const childCount = (node._left !== null ? 1 : 0) + (node._right !== null ? 1 : 0);
-
-    // const node = this.find(data, this._root);
-    // if (node) {
-    //
-    //   if (node === this._root) {
-    //
-    //   }
-    // }
   },
 };
 
